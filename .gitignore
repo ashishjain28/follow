@@ -10,3 +10,8 @@ follow_env/
 #SQLite DB
 db.sqlite3
 
+#static files folder
+static_cdn
+
+#media files (uploaded by user)
+media_cdn
