@@ -1,0 +1,12 @@
+#virtual env
+follow_env/
+
+# IDE specific folder
+.idea/
+
+#Byte-compiled / Optimized / DLL files
+*.py[cod]
+
+#SQLite DB
+db.sqlite3
+
