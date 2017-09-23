@@ -41,3 +41,7 @@ class Post(models.Model):
     user = models.OneToOneField(User)
     post_date = models.DateTimeField(auto_now_add=True)
     likes_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.content + 'by' + self.user.username
+
