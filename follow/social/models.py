@@ -3,6 +3,7 @@ from django.db import models
 
 # Create your models here.
 
+
 def upload_location(instance, filename):
     return instance + '/dp/' + filename
 
@@ -18,6 +19,8 @@ class Profile(models.Model):
     image = models.ImageField(blank=True,
                               upload_to=upload_location)
     friends = models.ManyToManyField("self", blank=True)
+    friend_requests_sent = models.ManyToManyField("self", blank=True)
+    friend_requests_received = models.ManyToManyField("self", blank=True)
 
     def __str__(self):
         return self.user.username
@@ -42,3 +45,4 @@ class Post(models.Model):
 
     def __str__(self):
         return self.content + 'by' + self.user.username
+
