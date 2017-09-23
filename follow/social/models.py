@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 
 def upload_location(instance, filename):
-    return 'dp/' + instance + '/' + filename
+    return instance + '/dp/' + filename
 
 
 class Profile(models.Model):
@@ -18,8 +18,8 @@ class Profile(models.Model):
                                                 )
     is_mobile_visible = models.BooleanField(default=False)
     is_email_visible = models.BooleanField(default=False)
-    picture = models.ImageField(blank=True,
-                                upload_to=upload_location)
+    image = models.ImageField(blank=True,
+                              upload_to=upload_location)
 
     def __str__(self):
         return self.user.username
@@ -28,3 +28,16 @@ class Profile(models.Model):
         db_table = 'user_profile',
         verbose_name = 'UserProfile',
         verbose_name_plural = 'UserProfiles'
+
+
+def post_upload_location(instance, filename):
+    return instance.user.username + '/posts/' + filename
+
+
+class Post(models.Model):
+    content = models.TextField(max_length=200, blank=False)
+    post_image = models.ImageField(blank=True,
+                                   upload_to=post_upload_location)
+    user = models.OneToOneField(User)
+    post_date = models.DateTimeField(auto_now_add=True)
+    likes_count = models.PositiveIntegerField(default=0)
