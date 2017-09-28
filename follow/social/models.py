@@ -26,8 +26,8 @@ class Profile(models.Model):
         return self.user.username
 
     class Meta:
-        db_table = 'user_profile',
-        verbose_name = 'UserProfile',
+        db_table = 'user_profile'
+        verbose_name = 'UserProfile'
         verbose_name_plural = 'UserProfiles'
 
 
@@ -39,7 +39,8 @@ class Post(models.Model):
     content = models.TextField(max_length=200, blank=False)
     post_image = models.ImageField(blank=True,
                                    upload_to=post_upload_location)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='Post')
     post_date = models.DateTimeField(auto_now_add=True)
     likes_count = models.PositiveIntegerField(default=0)
 
