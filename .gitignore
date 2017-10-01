@@ -15,3 +15,6 @@ static_cdn
 
 #media files (uploaded by user)
 media_cdn
+
+#superuser credentials
+superuser
