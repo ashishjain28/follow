@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import pre_save
+from django.utils.text import slugify
 
 # Create your models here.
 
 
 def upload_location(instance, filename):
-    return instance + '/dp/' + filename
+    return str(instance.user.username) + '/dp/' + filename
 
 
 class Profile(models.Model):
@@ -13,7 +15,7 @@ class Profile(models.Model):
                                 related_name='Profile',
                                 on_delete=models.CASCADE
                                 )
-    mobile_number = models.PositiveIntegerField(blank=False)
+    mobile_number = models.CharField(max_length=10, blank=False)
     is_mobile_visible = models.BooleanField(default=False)
     is_email_visible = models.BooleanField(default=False)
     image = models.ImageField(blank=True,
@@ -21,6 +23,7 @@ class Profile(models.Model):
     friends = models.ManyToManyField("self", blank=True)
     friend_requests_sent = models.ManyToManyField("self", blank=True)
     friend_requests_received = models.ManyToManyField("self", blank=True)
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.user.username
@@ -31,8 +34,25 @@ class Profile(models.Model):
         verbose_name_plural = 'UserProfiles'
 
 
+def pre_save_profile(sender, instance, *args, **kwargs):
+    slug = slugify(instance.user.username)
+    exists = Profile.objects.filter(slug=slug).exists()
+    if exists:
+        slug = slug+'-1'
+        exists = Profile.objects.filter(slug=slug).exists()
+        while exists:
+            parts = slug.split('-')
+            number = int(parts[-1]) + 1
+            slug = parts[:-1] + str(number)
+            exists = Profile.objects.filter(slug=slug).exists()
+    instance.slug = slug
+
+
+pre_save.connect(pre_save_profile, sender=Profile)
+
+
 def post_upload_location(instance, filename):
-    return instance.user.username + '/posts/' + filename
+    return str(instance.user.username) + '/posts/' + filename
 
 
 class Post(models.Model):
@@ -43,7 +63,7 @@ class Post(models.Model):
                              related_name='Post')
     post_date = models.DateTimeField(auto_now_add=True)
     likes_count = models.PositiveIntegerField(default=0)
+    likers = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.content + 'by' + self.user.username
-
