@@ -16,11 +16,11 @@ class ProfileForm(forms.ModelForm):
                              max_length=50,
                              required=True)
 
-    def __init__(self, *args, **kwargs):
-        super(ProfileForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'] = self.instance.user.first_name
-        self.fields['last_name'] = self.instance.user.last_name
-        self.fields['email'] = self.instance.user.email
+    # def __init__(self, *args, **kwargs):
+    #     super(ProfileForm, self).__init__(*args, **kwargs)
+        # self.fields['first_name'] = self.user.first_name
+        # self.fields['last_name'] = self.user.last_name
+        # self.fields['email'] = self.user.email
 
     class Meta:
         model = Profile
@@ -59,7 +59,7 @@ class SignUpForm(forms.ModelForm):
         ]
 
 
-class PostForm(forms.ModelForm):
+class CreatePostForm(forms.ModelForm):
 
     class Meta:
         model = Post
@@ -67,3 +67,4 @@ class PostForm(forms.ModelForm):
             "content",
             "post_image"
         ]
+

@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
 
+
+from  itertools import count
 # Create your models here.
 
 
@@ -28,27 +30,46 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+    def save(self, *args, **kwargs):
+        if self.slug == "":
+            slug = slugify(self.user.username)
+            for x in count(1):
+                if not Profile.objects.filter(slug=slug).exists():
+                    break
+                slug = '%s-%d' % (slug, x)
+
+                # slug = slug + '-1'
+                # exists = Profile.objects.filter(slug=slug).exists()
+                # while exists:
+                #     parts = slug.split('-')
+                #     number = int(parts[-1]) + 1
+                #     slug = parts[:-1] + str(number)
+                #     exists = Profile.objects.filter(slug=slug).exists()
+            self.slug = slug
+            # print(self.slug)
+        super(Profile, self).save(*args, **kwargs)
+
     class Meta:
         db_table = 'user_profile'
         verbose_name = 'UserProfile'
         verbose_name_plural = 'UserProfiles'
 
 
-def pre_save_profile(sender, instance, *args, **kwargs):
-    slug = slugify(instance.user.username)
-    exists = Profile.objects.filter(slug=slug).exists()
-    if exists:
-        slug = slug+'-1'
-        exists = Profile.objects.filter(slug=slug).exists()
-        while exists:
-            parts = slug.split('-')
-            number = int(parts[-1]) + 1
-            slug = parts[:-1] + str(number)
-            exists = Profile.objects.filter(slug=slug).exists()
-    instance.slug = slug
+# def pre_save_profile(sender, instance, *args, **kwargs):
+#     slug = slugify(instance.user.username)
+#     exists = Profile.objects.filter(slug=slug).exists()
+#     if exists:
+#         slug = slug+'-1'
+#         exists = Profile.objects.filter(slug=slug).exists()
+#         while exists:
+#             parts = slug.split('-')
+#             number = int(parts[-1]) + 1
+#             slug = parts[:-1] + str(number)
+#             exists = Profile.objects.filter(slug=slug).exists()
+#     instance.slug = slug
 
 
-pre_save.connect(pre_save_profile, sender=Profile)
+# pre_save.connect(pre_save_profile, sender=Profile)
 
 
 def post_upload_location(instance, filename):
