@@ -4,8 +4,23 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from .models import Profile
 
-from .forms import SignUpForm, ProfileForm
+from .forms import CreatePostForm, ProfileForm, SignUpForm
 # Create your views here.
+
+
+def create_post(request):
+    if not request.user.is_authenticated():
+        print("Not Authenticated")
+        return redirect('/social/')
+    print(request.user)
+    form = CreatePostForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            return redirect('/social/')
+    return render(request, 'social/createpost.html', {"form": form})
 
 
 def index(request):
