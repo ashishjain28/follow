@@ -1,0 +1,10 @@
+Django==1.9
+django-activity-stream==0.6.4
+django-debug-toolbar==1.8
+django-jsonfield==1.0.1
+django-jsonfield-compat==0.4.4
+olefile==0.44
+Pillow==4.2.1
+psycopg2==2.7.3.1
+six==1.11.0
+sqlparse==0.2.4
