@@ -1,10 +1,11 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 
 from .models import Profile
 
-from .forms import CreatePostForm, ProfileForm, SignUpForm
+from .forms import CreatePostForm, ProfileForm, SignInForm, SignUpForm
 # Create your views here.
 
 
@@ -55,18 +56,35 @@ def profile(request, slug):
     return render(request, 'social/profile.html', context)
 
 
+def signin(request):
+    if request.user.is_authenticated():
+        return redirect('/social/')
+    form = SignInForm(request.POST or None)
+    error_message = ""
+    if request.method == "POST":
+        if form.is_valid():
+            user = authenticate(username=request.POST["username"],
+                                password=request.POST["password"])
+            if user is not None:
+                login(request, user)
+                return redirect('/social/')
+        error_message = "Please provide correct credentials"
+    return render(request, 'social/signin.html', {"form": form, "errors": error_message})
+
+
 def signup(request):
     form = SignUpForm(request.POST or None)
-    if form.is_valid():
-        instance = form.save(commit=True)
-        profile_instance = Profile()
-        profile_instance.user = instance
-        profile_instance.mobile_number = form["mobile_number"].value()
-        profile_instance.friend_requests_received = []
-        profile_instance.friend_requests_sent = []
-        profile_instance.friends = []
-        profile_instance.save()
-        return redirect('/social/')
+    if request.method == "POST":
+        if form.is_valid():
+            instance = form.save(commit=True)
+            profile_instance = Profile()
+            profile_instance.user = instance
+            profile_instance.mobile_number = form["mobile_number"].value()
+            profile_instance.friend_requests_received = []
+            profile_instance.friend_requests_sent = []
+            profile_instance.friends = []
+            profile_instance.save()
+            return redirect('/social/')
     context = {
         "form": form
     }

@@ -34,12 +34,16 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # third party apps
+    'actstream',
     'debug_toolbar',
 
+    # own apps
     'social'
 ]
 
@@ -143,3 +147,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
 INTERNAL_IPS = '127.0.0.1'
+
+
+SITE_ID = 1
+
+ACTSTREAM_SETTINGS = {
+    # 'MANAGER': '',    //manager to be created
+    'FETCH_RELATIONS': True,
+    # 'USE_PREFETCH': True, //Deprecated
+    'USE_JSONFIELD': True,
+    # 'GFK_FETCH_DEPTH': 1  //Deprecated
+}

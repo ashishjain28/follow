@@ -1,8 +1,19 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.template.defaulttags import widthratio
 
 from .models import Post, Profile
+
+
+class CreatePostForm(forms.ModelForm):
+
+    class Meta:
+        model = Post
+        fields = [
+            "content",
+            "post_image"
+        ]
 
 
 class ProfileForm(forms.ModelForm):
@@ -32,11 +43,26 @@ class ProfileForm(forms.ModelForm):
         ]
 
 
+class SignInForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    password = forms.CharField(max_length=100,
+                               widget=forms.PasswordInput)
+    pass
+
+    # class Meta:
+    #     model = get_user_model()
+    #     fields = [
+    #         "username",
+    #         "password"
+    #     ]
+
+
 class SignUpForm(forms.ModelForm):
 
     mobile_number = forms.CharField(label="Mobile Number",
                                     max_length=10,
                                     required=True)
+    password = forms.CharField(widget=forms.PasswordInput)
 
     def clean_mobile_number(self):
         mobile = self.cleaned_data['mobile_number']
@@ -57,14 +83,3 @@ class SignUpForm(forms.ModelForm):
             "password",
             "email"
         ]
-
-
-class CreatePostForm(forms.ModelForm):
-
-    class Meta:
-        model = Post
-        fields = [
-            "content",
-            "post_image"
-        ]
-
