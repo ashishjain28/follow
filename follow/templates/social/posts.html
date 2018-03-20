@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load activity_tags %}
+<head>
+    <meta charset="UTF-8">
+    <title>All posts</title>
+</head>
+<body>
+<ul>
+    {% activity_stream 'actor' user%}
+    {% for action in stream %}
+        <!--{{ action.actor }}<br>-->
+        {% display_action action %}<br>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

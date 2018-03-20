@@ -1,25 +1,30 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.http import HttpRequest, HttpResponse
+#from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 
-from .models import Profile
+from actstream import action
+from actstream.models import Action
+#from actstream.models import model_stream
 
+from .models import Profile, Post
 from .forms import CreatePostForm, ProfileForm, SignInForm, SignUpForm
 # Create your views here.
 
 
 def create_post(request):
+    # print(request.user)
     if not request.user.is_authenticated():
         print("Not Authenticated")
         return redirect('/social/')
-    print(request.user)
     form = CreatePostForm(request.POST or None, request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
+            user_profile = Profile.objects.get(user=request.user)
+            action.send(request.user, verb="Posted", action_object=instance)
             return redirect('/social/')
     return render(request, 'social/createpost.html', {"form": form})
 
@@ -34,7 +39,7 @@ def profile(request, slug):
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)
-            print(instance)
+            # print(instance)
             instance.save()
             return redirect('/social/')
         else:
@@ -65,11 +70,17 @@ def signin(request):
         if form.is_valid():
             user = authenticate(username=request.POST["username"],
                                 password=request.POST["password"])
+            # print(user)
             if user is not None:
                 login(request, user)
                 return redirect('/social/')
         error_message = "Please provide correct credentials"
     return render(request, 'social/signin.html', {"form": form, "errors": error_message})
+
+
+def signout(request):
+    logout(request)
+    return redirect('/social/')
 
 
 def signup(request):
@@ -89,3 +100,10 @@ def signup(request):
         "form": form
     }
     return render(request, 'social/signup.html', context)
+
+
+def view_posts(request):
+    if not request.user.is_authenticated():
+        return redirect('/social/signin/')
+    #user_profile = Profile.objects.get(user=request.user)
+    return render(request, 'social/posts.html', {'user': request.user})

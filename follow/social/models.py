@@ -87,4 +87,4 @@ class Post(models.Model):
     likers = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
-        return self.content + 'by' + self.user.username
+        return self.content
