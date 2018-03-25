@@ -6,12 +6,21 @@
     <title>All posts</title>
 </head>
 <body>
-<ul>
-    {% activity_stream 'user' request.user %}
-    {% for action in stream %}
-        {% display_action action %}<br>
-    {% endfor %}
-</ul>
-
+    <a href="{% url 'social:index' %}"><input type="button" value="Home"></a>
+    <ul>
+        {% activity_stream 'user' request.user %}
+        {% for action in stream %}
+            {% if action.verb != "started following" %}
+                {% display_action action %}<br />
+                Likes: - {{ action.action_object.likes_count }}<br />
+                {% if request.user in action.action_object.likers.all %}
+                    Liked
+                {% else %}
+                    Like
+                {% endif %}
+                <br />
+            {% endif %}
+        {% endfor %}
+    </ul>
 </body>
 </html>
