@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load activity_tags %}
+<head>
+    <meta charset="UTF-8">
+    <title>Follow Others</title>
+</head>
+<body>
+    {% if users_list %}
+        {% for each in users_list %}
+            <a href="{% follow_all_url each %}">
+                {% if request.user|is_following:each %}
+                    Stop Following {{ each.username }}
+                {% else %}
+                    Follow {{ each.username }}
+                {% endif %}
+            </a>
+            <br />
+        {% endfor %}
+    {% else %}
+        "No one is there to follow"
+    {% endif %}
+</body>
+</html>

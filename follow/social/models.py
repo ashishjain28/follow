@@ -22,10 +22,10 @@ class Profile(models.Model):
     is_email_visible = models.BooleanField(default=False)
     image = models.ImageField(blank=True,
                               upload_to=upload_location)
-    friends = models.ManyToManyField("self", blank=True)
-    friend_requests_sent = models.ManyToManyField("self", blank=True)
-    friend_requests_received = models.ManyToManyField("self", blank=True)
     slug = models.SlugField(unique=True)
+    # friends = models.ManyToManyField("self", blank=True)
+    # friend_requests_sent = models.ManyToManyField("self", blank=True)
+    # friend_requests_received = models.ManyToManyField("self", blank=True)
 
     def __str__(self):
         return self.user.username

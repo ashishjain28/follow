@@ -7,9 +7,8 @@
 </head>
 <body>
 <ul>
-    {% activity_stream 'actor' user%}
+    {% activity_stream 'user' request.user %}
     {% for action in stream %}
-        <!--{{ action.actor }}<br>-->
         {% display_action action %}<br>
     {% endfor %}
 </ul>

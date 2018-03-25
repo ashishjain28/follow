@@ -15,7 +15,7 @@ from .forms import CreatePostForm, ProfileForm, SignInForm, SignUpForm
 def create_post(request):
     # print(request.user)
     if not request.user.is_authenticated():
-        print("Not Authenticated")
+        print("Not Authenticated")  #Use Message FW
         return redirect('/social/')
     form = CreatePostForm(request.POST or None, request.FILES or None)
     if request.method == 'POST':
@@ -29,6 +29,14 @@ def create_post(request):
     return render(request, 'social/createpost.html', {"form": form})
 
 
+def follow_others(request):
+    if not request.user.is_authenticated():
+        print("Login to follow others")  #Use Message FW
+        return redirect('/social/signin')
+    users_list = User.objects.all().exclude(username=request.user.username)
+    return render(request, 'social/follow_others.html', {"users_list": users_list})
+
+
 def index(request):
     return render(request, 'social/index.html', {})
 
@@ -39,7 +47,6 @@ def profile(request, slug):
     if request.method == 'POST':
         if form.is_valid():
             instance = form.save(commit=False)
-            # print(instance)
             instance.save()
             return redirect('/social/')
         else:
