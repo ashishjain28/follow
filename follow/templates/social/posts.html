@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 {% load activity_tags %}
 <head>
@@ -6,11 +6,16 @@
     <title>All posts</title>
 </head>
 <body>
-    <a href="{% url 'social:index' %}"><input type="button" value="Home"></a>
+    <a href="{% url 'social:index' %}"><input type="button" value="Back to Home"></a>
     <ul>
         {% activity_stream 'user' request.user %}
         {% for action in stream %}
             {% if action.verb != "started following" %}
+                {% if action.action_object.post_image %}
+                    <img src = "{{ action.action_object.post_image.url }}"
+                        height = "300" width = "300"/>
+                    <br />
+                {% endif %}
                 {% display_action action %}<br />
                 Likes: - {{ action.action_object.likes_count }}<br />
                 {% if request.user in action.action_object.likers.all %}
