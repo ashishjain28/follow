@@ -21,9 +21,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
 
+    url(r'^activity/', include('actstream.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^social/', include('social.urls', namespace="social")),
-    url(r'^activity/', include('actstream.urls'))
+    url(r'^social/', include('social.urls', namespace="social_native")),
+    url('', include('social_django.urls', namespace="social"))
 ]
 
 

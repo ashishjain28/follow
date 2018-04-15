@@ -6,7 +6,7 @@
     <title>All posts</title>
 </head>
 <body>
-    <a href="{% url 'social:index' %}"><input type="button" value="Back to Home"></a>
+    <a href="{% url 'social_native:index' %}"><input type="button" value="Back to Home"></a>
     <ul>
         {% activity_stream 'user' request.user %}
         {% for action in stream %}

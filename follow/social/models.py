@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.utils.text import slugify
 
 
@@ -70,6 +70,13 @@ class Profile(models.Model):
 
 
 # pre_save.connect(pre_save_profile, sender=Profile)
+
+
+def post_save_user(sender, instance, *args, **kwargs):
+    Profile.objects.get_or_create(user=instance)
+
+
+post_save.connect(post_save_user, sender=User)
 
 
 def post_upload_location(instance, filename):

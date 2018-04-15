@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # third party apps
     'actstream',
     'debug_toolbar',
+    'social_django',
 
     # own apps
     'social'
@@ -73,6 +74,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
@@ -158,3 +162,16 @@ ACTSTREAM_SETTINGS = {
     'USE_JSONFIELD': True,
     # 'GFK_FETCH_DEPTH': 1  //Deprecated
 }
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOpenId',    # for Google authentication
+    'social_core.backends.google.GoogleOAuth2',    # for Google authentication
+    'social_core.backends.google.GoogleOAuth',     # for Google authentication
+
+    'django.contrib.auth.backends.ModelBackend'   # for normal authentication
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "827866653420-vdmdg2jv65tgcb3okrp31q17nb0cluc1.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "hoqBOMlXnweoF7TT1kEkRmuR"
+
+LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/social/'

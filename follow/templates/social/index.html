@@ -11,11 +11,11 @@
         {% endif %}!
     </h1>
     {% if request.user.is_authenticated %}
-        <a href="{% url 'social:sign_out' %}">Sign Out</a><br />
-        <a href="{% url 'social:view_posts' %}">View Activity</a>
+        <a href="{% url 'social_native:sign_out' %}">Sign Out</a><br />
+        <a href="{% url 'social_native:view_posts' %}">View Activity</a>
     {% else %}
-        <a href="{% url 'social:sign_up' %}">Register!</a><br/>
-        Already a user, <a href="{% url 'social:sign_in' %}">Sign in</a>
+        <a href="{% url 'social_native:sign_up' %}">Register!</a><br/>
+        Already a user, <a href="{% url 'social_native:sign_in' %}">Sign in</a>
     {% endif %}
 </body>
 </html>

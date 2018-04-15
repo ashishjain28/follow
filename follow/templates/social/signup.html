@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>Sign Up</title>
 </head>
-<body>
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Sign Up">
     </form>
+    <a href="{% url 'social:begin' 'google-oauth2' %}"> Google+ </a>
 </body>
 </html>
