@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 #from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.core.urlresolvers import reverse
 
 from actstream import action
 from actstream.models import Action
@@ -16,7 +17,7 @@ def create_post(request):
     # print(request.user)
     if not request.user.is_authenticated():
         print("Not Authenticated")  #Use Message FW
-        return redirect('/social/')
+        return redirect(reverse('social_native:index'))
     form = CreatePostForm(request.POST or None, request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -25,14 +26,14 @@ def create_post(request):
             instance.save()
             user_profile = Profile.objects.get(user=request.user)
             action.send(request.user, verb="Posted", action_object=instance)
-            return redirect('/social/')
+            return redirect(reverse('social_native:index'))
     return render(request, 'social/createpost.html', {"form": form})
 
 
 def follow_others(request):
     if not request.user.is_authenticated():
         print("Login to follow others")  #Use Message FW
-        return redirect('/social/signin')
+        return redirect(reverse('social_native:sign_in'))
     users_list = User.objects.all().exclude(username=request.user.username)
     return render(request, 'social/follow_others.html', {"users_list": users_list})
 
@@ -48,7 +49,7 @@ def profile(request, slug):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
-            return redirect('/social/')
+            return redirect(reverse('social_native:index'))
         else:
             return render(request, 'social/profile.html', {"form": form})
     profile_instance = get_object_or_404(Profile, slug=slug)
@@ -70,7 +71,7 @@ def profile(request, slug):
 
 def signin(request):
     if request.user.is_authenticated():
-        return redirect('/social/')
+        return redirect(reverse('social_native:index'))
     form = SignInForm(request.POST or None)
     error_message = ""
     if request.method == "POST":
@@ -80,14 +81,14 @@ def signin(request):
             # print(user)
             if user is not None:
                 login(request, user)
-                return redirect('/social/')
+                return redirect(reverse('social_native:index'))
         error_message = "Please provide correct credentials"
     return render(request, 'social/signin.html', {"form": form, "errors": error_message})
 
 
 def signout(request):
     logout(request)
-    return redirect('/social/')
+    return redirect(reverse('social_native:index'))
 
 
 def signup(request):
@@ -102,7 +103,7 @@ def signup(request):
             profile_instance.friend_requests_sent = []
             profile_instance.friends = []
             profile_instance.save()
-            return redirect('/social/')
+            return redirect(reverse('social_native:index'))
     context = {
         "form": form
     }
@@ -111,6 +112,6 @@ def signup(request):
 
 def view_posts(request):
     if not request.user.is_authenticated():
-        return redirect('/social/signin/')
+        return redirect(reverse('social_native:sign_in'))
     #user_profile = Profile.objects.get(user=request.user)
     return render(request, 'social/posts.html', {'user': request.user})
