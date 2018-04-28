@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-#from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
 
@@ -36,6 +36,22 @@ def follow_others(request):
         return redirect(reverse('social_native:sign_in'))
     users_list = User.objects.all().exclude(username=request.user.username)
     return render(request, 'social/follow_others.html', {"users_list": users_list})
+
+
+def post_like(request, post_id, username):
+    post = Post.objects.get(id=int(post_id))
+    user = User.objects.get(username=username)
+    if user not in post.likers.all():
+        post.likers.add(user)
+        post.likes_count += 1
+        post.save()
+        return HttpResponse("Liked")
+    else:
+        post.likers.remove(user)
+        post.likes_count -= 1
+        post.save()
+        return HttpResponse("Like")
+
 
 
 def index(request):

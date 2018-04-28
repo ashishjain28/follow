@@ -17,15 +17,39 @@
                     <br />
                 {% endif %}
                 {% display_action action %}<br />
-                Likes: - {{ action.action_object.likes_count }}<br />
+                Likes: -
+                <span id="likes_count_{{ action.action_object.id }}">
+                    {{ action.action_object.likes_count }}
+                </span>
+                <input type="button" value=
                 {% if request.user in action.action_object.likers.all %}
                     Liked
                 {% else %}
                     Like
                 {% endif %}
+                       onclick="toggle('{{ request.user }}', '{{ action.action_object.id }}')"
+                       id="like_button_{{ action.action_object.id }}">
                 <br />
             {% endif %}
         {% endfor %}
     </ul>
+    <script>
+        function toggle(username, post_id){
+            fetch("http://127.0.0.1:8000/social/posts/like/"+post_id+"/"+username+"/").then(function(response){
+                if (document.getElementById("like_button_"+post_id).value == "Like"){
+                    document.getElementById("like_button_"+post_id).value = "Liked";
+                    var x = parseInt(document.getElementById("likes_count_"+post_id).innerHTML);
+                    x = x + 1;
+                    document.getElementById("likes_count_"+post_id).innerHTML = x;
+                }
+                else{
+                    document.getElementById("like_button_"+post_id).value = "Like";
+                    var x = parseInt(document.getElementById("likes_count_"+post_id).innerHTML);
+                    x = x - 1;
+                    document.getElementById("likes_count_"+post_id).innerHTML = x;
+                }
+            })
+        };
+    </script>
 </body>
 </html>
